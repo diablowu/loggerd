@@ -1,7 +1,6 @@
 package main
 
 import (
-    glgserver "diablowu/golog/server"
     "fmt"
     "github.com/qiniu/api/io"
 )

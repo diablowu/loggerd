@@ -1,8 +1,10 @@
 package test
 
 import (
+    // "github.com/wubo19842008/loggerd/server/entity"
+    "io/ioutil"
     // "bufio"
-    "diablowu/golog/server/entity"
+
     "encoding/json"
     "fmt"
     // "io/ioutil"
@@ -20,13 +22,36 @@ func TestDecode(t *testing.T) {
         }
     }()
 
+    ba, _ := ioutil.ReadAll(file)
+
+    var vvv interface{}
+    json.Unmarshal(ba, &vvv)
     // bio := bufio.NewReader(file)
-    decoder := json.NewDecoder(file)
-    var le entity.LogEntity
-    decoder.Decode(&le)
-    fmt.Println(le)
+    // decoder := json.NewDecoder(file)
+    // var le entity.LogEntity
+    // decoder.Decode(&le)
+    // fmt.Println(v)
 
-    for {
+    m := vvv.(map[string]interface{})
 
+    for k, v := range m {
+        switch vv := v.(type) {
+        case string:
+            fmt.Println(k, "is string", vv)
+        case int:
+            fmt.Println(k, "is int", vv)
+        case []interface{}:
+            fmt.Println(k, "is an array:")
+            for i, u := range vv {
+                fmt.Println(i, u)
+            }
+        case bool:
+            fmt.Println(k, "is boolean", vv)
+        case float64:
+            fmt.Println(k, "is float64", vv)
+        default:
+            fmt.Println(k, "is of a type I don't know how to handle")
+        }
     }
+
 }
