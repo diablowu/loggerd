@@ -1,30 +1,16 @@
 package main
 
 import (
+    glgserver "diablowu/golog/server"
     "fmt"
-    "net/http"
+    "github.com/qiniu/api/io"
 )
 
-type User struct {
-    id   int64
-    name string
-}
-
 func main() {
-    // uu := new User{1,"asdf"}
+    fmt.Println(glgserver.Port)
 
-    uu := &User{1, "asdfd"}
+    ggs := glgserver.Create(0, "127.0.0.1:9999", true)
 
-    fmt.Printf("%p", uu)
-
-    http.HandleFunc("/logger/add", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Print("add ...")
-    })
-
-    err := http.ListenAndServe("0.0.0.0:8080", nil)
-
-    if err != nil {
-        panic(err)
-    }
+    ggs.Start()
 
 }
