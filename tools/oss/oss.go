@@ -1,4 +1,4 @@
-package main
+// package oss
 
 import (
     "bytes"
@@ -13,12 +13,6 @@ import (
     // "net/http"
 )
 
-var OSS_UC = map[string]interface{}{
-    "app_id":          "",
-    "user_credential": "",
-    "developer_kid":   "",
-    "developer_key":   "",
-}
 
 const (
     JSON_ContentType = "application/json"
@@ -31,7 +25,7 @@ const (
     gw_upload     = "http://cosx.lenovows.com/v2/object/data/mslife/00417f3cf6800200"
 )
 
-func getConn(uc map[string]string) (conn string, err error) {
+func GetConn(uc map[string]interface{}) (conn string, err error) {
     body, err := jsons.ToJsonString(uc, false)
     if err != nil {
         return
@@ -54,7 +48,34 @@ func getConn(uc map[string]string) (conn string, err error) {
     if err != nil {
         return
     }
-    conn = retObj["connector"]
+    conn, _ = retObj["connector"].(string)
+
+    return
+}
+
+func CreateSession(uc map[string]interface{}, conn string) (location string, err error) {
+    req := make(map[string]interface{}, 3)
+    req["connector"] = conn
+    req["developer_kid"] = uc["developer_kid"]
+    req["developer_key"] = uc["developer_key"]
+    var reqStr string
+    reqStr, err = jsons.ToJsonString(req, false)
+
+    if err != nil {
+        return
+    }
+
+    var resp *http.Response
+    resp, err = http.DefaultClient.Post(
+        gw_session,
+        JSON_ContentType,
+        bytes.NewBufferString(reqStr))
+
+    if err != nil {
+        return
+    }
+
+    location = resp.Header.Get("location")
     return
 }
 
@@ -65,7 +86,7 @@ func main() {
         fmt.Println(err)
     }
     // fmt.Println(body)
-    resp, _ := http.Post(gw_connector, contentType, bytes.NewBufferString(body))
+    resp, _ := http.Post(gw_connector, JSON_ContentType, bytes.NewBufferString(body))
     // fmt.Println(resp.Status)
     // for k, v := range resp.Header {
     //     fmt.Printf("key is %s value is %s \n", k, v)
@@ -78,10 +99,7 @@ func main() {
     // uid := retObj["uid"]
     cct := retObj["connector"]
 
-    // fmt.Println(session, uid, cct)
-
-    //"{\"connector\":\"$Connector\",\"developer_kid\":\"$KeyId\",\"developer_key\":\"$Key
-    //curl -X POST "http://airx.lenovows.com/v1/app/session" -d "{\"connector\":\"$Connector\",\"developer_kid\":\"$KeyId\",\"developer_key\":\"$Key" -v
+   
 
     sessionReqBody := make(map[string]interface{}, 3)
     sessionReqBody["connector"] = cct
@@ -90,7 +108,7 @@ func main() {
 
     sessionReqStr, _ := jsons.ToJsonString(sessionReqBody, false)
 
-    sessionResp, _ := http.DefaultClient.Post(gw_session, contentType, bytes.NewBufferString(sessionReqStr))
+    sessionResp, _ := http.DefaultClient.Post(gw_session, JSON_ContentType, bytes.NewBufferString(sessionReqStr))
 
     location := sessionResp.Header.Get("location")
     fmt.Println(location)

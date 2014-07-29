@@ -7,10 +7,10 @@ import (
 
 const jsondata = `    
 {
-  "app_id": "004174d3ac5b9000",
-  "user_credential": "basic weiwy3@lenovo.com:000000",
-  "developer_kid": "82b5de4eca6fc69699cdcdff07944014",
-  "developer_key": "29614d94afb302a87d782f4c6a3889c6"
+  "app_id": "",
+  "user_credential": "",
+  "developer_kid": "",
+  "developer_key": ""
 }`
 
 func main() {

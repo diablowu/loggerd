@@ -2,43 +2,46 @@ package jsons
 
 import (
     "fmt"
+    "strings"
     "testing"
 )
 
-func TestJsonSEncode(t *testing.T) {
+func TestEncode(t *testing.T) {
     obj := make(map[string]interface{})
+    obj["app_id"] = "1111111111111111"
 
     ss, e := ToJsonString(obj, false)
     if e == nil {
-        fmt.Println(ss)
+        if strings.Index(ss, "1111111111111111") > 0 {
+            t.Log("encode success.")
+        } else {
+            t.Error("encode error.")
+        }
     } else {
         t.Error(e)
     }
 }
 
-func TestJsonsDecode(t *testing.T) {
+func TestDecode(t *testing.T) {
     jsons := `
     {
-  "app_id": "004174d3ac5b9000",
-  "user_credential": "basic weiwy3@lenovo.com:000000",
-  "developer_kid": "82b5de4eca6fc69699cdcdff07944014",
-  "developer_key": "29614d94afb302a87d782f4c6a3889c6"
+  "app_id": "",
+  "user_credential": "",
+  "developer_kid": "",
+  "developer_key": ""
 }
 `
     obj, err := FromJsonString(jsons)
 
-    if err != nil {
-        t.Error(err)
-    } else {
-        if obj == nil {
-            // fmt.Println(obj)
-            v, ok := obj["app_id"]
-            if !ok {
-                t.Error("decode error.")
-            } else {
-                fmt.Printf("app_id is %s\n", v)
-            }
+    if err == nil && obj != nil {
+
+        if v, ok := obj["app_id"]; ok {
+            fmt.Printf("app_id is %s\n", v)
+        } else {
+            t.Error("decode error.")
         }
+    } else {
+        t.Error("decode error.")
     }
 
 }
@@ -46,10 +49,10 @@ func BenchmarkJsonsDecode(t *testing.B) {
     for i := 0; i < t.N; i++ {
         jsons := `
     {
-  "app_id": "004174d3ac5b9000",
-  "user_credential": "basic weiwy3@lenovo.com:000000",
-  "developer_kid": "82b5de4eca6fc69699cdcdff07944014",
-  "developer_key": "29614d94afb302a87d782f4c6a3889c6"
+  "app_id": "",
+  "user_credential": "",
+  "developer_kid": "",
+  "developer_key": ""
 }
 `
         obj, err := FromJsonString(jsons)
