@@ -1,27 +1,16 @@
 package bucket
 
 import (
-    "encoding/json"
-    "fmt"
-
     "testing"
 )
 
-func TestDecode(t *testing.T) {
+func TestCreat(t *testing.T) {
+    lc := "http://iam.lenovows.com/v1/session/004181578ea9e000"
+    resp, err := CreateBucket(lc, "mspublic")
 
-    var obj BucketCreateResp
-    // fmt.Println(SS)
-    err := json.Unmarshal([]byte(SS), &obj)
-    if err != nil {
-        // panic(err)
-        fmt.Println(err)
+    if err == nil {
+        t.Log(resp)
     } else {
-        if len(obj.Tags) > 0 {
-            for _, v := range obj.Tags {
-                fmt.Println(v)
-            }
-        }
-        // fmt.Println(obj.CannedAccessControl)
+        t.Error(err)
     }
-
 }

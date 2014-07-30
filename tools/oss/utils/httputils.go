@@ -20,6 +20,7 @@ type RespBody struct {
     Status     string
     StatusCode int
     Body       []byte
+    Response   http.Response
 }
 
 //请求一个url同时发送一个json的body
@@ -45,6 +46,7 @@ func RequestBody(req ReqBody) (resp RespBody, err error) {
     resp.Status = response.Status
     resp.StatusCode = response.StatusCode
     resp.Body, err = ioutil.ReadAll(response.Body)
+    resp.Response = *response
     defer response.Body.Close()
 
     if err != nil {
